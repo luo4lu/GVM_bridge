@@ -117,6 +117,18 @@ getrandom = { version = "0.2", features = ["js"] }
 #### 为以上两个pallet在Runtime 中实现
 
 ```sh
+//--snip--
+use sp_runtime::traits::{Convert}
+use sp_runtime::PerThing;
+use pallet_contracts::{
+	BalanceOf,
+	chain_extension::{
+		Environment, Ext, SysConfig, RetVal,
+		UncheckedFrom, InitState, 
+	},
+};
+use pallet_evm::FeeCalculator;
+//--snip--
 parameter_types! {
 	pub const SignedClaimHandicap: u32 = 2;
 	pub const TombstoneDeposit: u64 = 16;
@@ -276,12 +288,6 @@ construct_runtime!(
 );
 ```
 
-添加完成之后可以运行以下命令检查在模块中正确配置实现：
-
-```sh
-cargo +nightly check -p frontier-template-runtime
-```
-
 ### 添加依赖Pallet创世配置
 
 不是所有的pallet都需要进行创世配置，合约桥接涉及contract pallet需要对genesis configuration。可以自行查看对应pallet的源码或documentation。
@@ -301,7 +307,7 @@ node/src/chain_spec.rs
 
 ```sh
 use node_template_runtime::{
-	EVMConfig, ContractsConfig,
+	ContractsConfig,
 };
 
 #--snip--
@@ -315,11 +321,6 @@ fn testnet_genesis(
 ) -> GenesisConfig {
 	GenesisConfig {
 	/* --snip--*/
-	
-	/*** Add this Block***/
-	pallet_evm: EVMConfig {
-    	accounts: BTreeMap::new(),
-    },
     pallet_contracts: ContractsConfig{
     	current_schedule: pallet_contracts::Schedule::default(),
     },
@@ -370,12 +371,15 @@ pallet_evm: EVMConfig {
 ```
 
 至此对于在runtime中实现合约GVM-bridge功能的代码实现已完成，可以编译并运行节点程序。但是合约之间实现互调需要在编写合约时实现调用接口。
+```sh
+cargo +nightly-2021-08-01 build --release
+```
 
 ### 合约调用接口实现
 
 需要实现桥接功能，首先在合约的实现上面需要指定数据的trait类型及调用接口方法，然后通过GVM-Bridge pallet实现跨合约调用。
 
-#### WASM合约实现方式
+#### 对WASM合约实现方式
 
 通过在合约实现中定义trait方法，使在合约实现中支持该指定trait关联类型方法，从而实现合约的互调。
 
@@ -443,6 +447,7 @@ mod erc20{
 在wasmCallEvm函数中通过对input的消息解析最终通过调用自定义trait中的方法call_evm_extension实现。
 
 通过以上方式实现wasm合约支持调用指定合约功能。
+当前项目提供可测试用wasm合约以供参考：[erc20wasm](https://github.com/luo4lu/GVM_bridge/blob/main/external/contract/src/erc20wasm/lib.rs).
 
 #### EVM合约实现方式
 
@@ -479,6 +484,7 @@ function evmCallWasm(bytes32 bob, uint256 value, bytes32 contractid) public retu
 ```
 
 evmCallWasm通过封装指定input字符的特征，通过调用_callWasmC解析实现合约的调用。
+当前项目提供可测试用evm合约以供参考：[erc20evm](https://github.com/luo4lu/GVM_bridge/blob/main/external/contract/src/erc20evm/TestEvmToken.sol).
 
 #### 启动链节点
 
