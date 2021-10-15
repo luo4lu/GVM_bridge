@@ -306,7 +306,7 @@ pallet-contracts = { git = "https://github.com/paritytech/substrate.git", branch
 node/src/chain_spec.rs
 
 ```sh
-use node_template_runtime::{
+use frontier_template_runtime::{
 	ContractsConfig,
 };
 
