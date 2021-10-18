@@ -61,8 +61,8 @@ Follow the steps below to get started with GVM Bridge.
 To start working with GVM Bridge you'll need to install [rustup](https://www.rustup.rs/), and install toolchain nightly-2021-03-01. If using x86_64 linux, you can do:
 
 ```sh
-rustup install nightly-2021-03-01
-rustup target add wasm32-unknown-unknown --toolchain nightly-2021-03-01-x86_64-unknown-linux-gnu
+rustup install nightly-2021-08-01
+rustup target add wasm32-unknown-unknown --toolchain nightly-2021-08-01-x86_64-unknown-linux-gnu
 ```
 
 #### **Download the source code**
@@ -77,14 +77,14 @@ cd GVM-Bridge
 Use Rust's native `cargo build` command to build GVM Bridge:
 
 ```sh
-cargo +nightly-2021-03-01 build --verbose
+cargo +nightly-2021-08-01 build --verbose
 ```
 
 #### **Test**
 Use Rust's native `cargo test` command to test GVM Bridge:
 
 ```sh
-cargo +nightly-2021-03-01 test
+cargo +nightly-2021-08-01 test
 ```
 
 -------

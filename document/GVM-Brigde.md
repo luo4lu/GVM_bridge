@@ -331,7 +331,7 @@ fn testnet_genesis(
 
 以上步骤仅包含了GVM-Brigde在runtime时的依赖及自身的配置参数项。
 
-为了方便后面部署部署合约，将EVMConfig中初始给的账户金额充值修改为自己的matemask钱包地址：
+为了方便后面部署合约，将EVMConfig中初始给的账户金额充值修改为自己的matemask钱包地址：
 
 ```sh
 pallet_evm: EVMConfig {
@@ -375,11 +375,11 @@ pallet_evm: EVMConfig {
 cargo +nightly-2021-08-01 build --release
 ```
 
-### 合约调用接口实现
+### 合约接口实现
 
 需要实现桥接功能，首先在合约的实现上面需要指定数据的trait类型及调用接口方法，然后通过GVM-Bridge pallet实现跨合约调用。
 
-#### 对WASM合约实现方式
+#### WASM合约实现方式
 
 通过在合约实现中定义trait方法，使在合约实现中支持该指定trait关联类型方法，从而实现合约的互调。
 
@@ -544,7 +544,7 @@ EVM合约：[Substarte Frontier工作坊](https://substrate.dev/docs/zh-CN/tutor
 
 ![matemask-config](./img/matemask_config.png)
 
-网络名词自己定义；RPC URL当前是在本地且端口在启动时已指定；链ID为Runtime实现EVM时自己设置的值，建议不用默认42，防止冲突。保存即可。
+网络名字自己定义；RPC URL当前是在本地且端口在启动时已指定；链ID为Runtime实现EVM时自己设置的值，建议不用默认42，防止冲突。保存即可。
 
 2、Remix->DEPLOY & RUN TRANSACTIONS配置如下：
 
