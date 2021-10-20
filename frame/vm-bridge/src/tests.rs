@@ -16,7 +16,7 @@
 // limitations under the License.
 
 use crate::{U256, H160, };
-
+use sp_std::{marker::PhantomData, prelude::*};
 use pallet_contracts::{
 	BalanceOf, ContractInfoOf, Schedule,
 	chain_extension::{
@@ -24,7 +24,9 @@ use pallet_contracts::{
 		UncheckedFrom, InitState, 
 	},
 };
-
+use sp_core::crypto::Public;
+use codec::alloc::string::String;
+use sp_consensus_aura::sr25519::AuthorityId as AuraId;
 use codec::{Encode, Decode};
 use sp_runtime::{
 	traits::{BlakeTwo256, Hash, IdentityLookup, Convert, },
@@ -34,9 +36,9 @@ use sp_runtime::{
 
 use frame_support::{
 	assert_ok, parameter_types,  
-	traits::{Currency, GenesisBuild},
+	traits::{FindAuthor, Currency, GenesisBuild},
 	weights::{Weight, constants::WEIGHT_PER_SECOND},
-	dispatch::{DispatchError}, 
+	dispatch::{DispatchError}, ConsensusEngineId,
 };
 
 use pretty_assertions::assert_eq;
@@ -75,6 +77,7 @@ frame_support::construct_runtime!(
 		System: frame_system::{Module, Call, Config, Storage, Event<T>},	
 		Balances: pallet_balances::{Module, Call, Storage, Config<T>, Event<T>},
 		Timestamp: pallet_timestamp::{Module, Call, Storage, Inherent},
+		Aura: pallet_aura::{Module, Config<T>},
 		Randomness: pallet_randomness_collective_flip::{Module, Call, Storage},	
 		Contracts: pallet_contracts::{Module, Call, Config<T>, Storage, Event<T>},
 		EVM: pallet_evm::{Module, Call, Config, Storage, Event<T>},
@@ -83,6 +86,10 @@ frame_support::construct_runtime!(
 );
 
 impl pallet_randomness_collective_flip::Config for Test {}
+
+impl pallet_aura::Config for Test {
+	type AuthorityId = AuraId;
+}
 
 parameter_types! {
 	pub const Enable2EVM: bool = true;
@@ -107,13 +114,25 @@ impl AddressMapping<AccountId32> for CompactAddressMapping {
 		AccountId32::from(data)
 	}
 }
-
+pub struct FindAuthorTruncated<F>(PhantomData<F>);
+impl<F: FindAuthor<u32>> FindAuthor<H160> for FindAuthorTruncated<F> {
+	fn find_author<'a, I>(digests: I) -> Option<H160>
+	where
+		I: 'a + IntoIterator<Item = (ConsensusEngineId, &'a [u8])>,
+	{
+		if let Some(author_index) = F::find_author(digests) {
+			let authority_id = Aura::authorities()[author_index as usize].clone();
+			return Some(H160::from_slice(&authority_id.to_raw_vec()[4..24]));
+		}
+		None
+	}
+}
 
 /// Fixed gas price of `0`.
 pub struct FixedGasPrice;
 impl FeeCalculator for FixedGasPrice {
         fn min_gas_price() -> U256 {
-                1.into()
+                0.into()
         }
 }
 
@@ -152,9 +171,8 @@ impl pallet_evm::Config for Test {
         type OnChargeTransaction = ();
 		type BlockGasLimit = ();
 		type BlockHashMapping = SubstrateBlockHashMapping<Self>;
-		type FindAuthor = ();
+		type FindAuthor = FindAuthorTruncated<Aura>;
 }
-
 
 //E
 
@@ -382,7 +400,7 @@ fn test_wasm_call_evm(){
 	.existential_deposit(100)
 	.build()
 	.execute_with(|| {
-		let _ = Balances::deposit_creating(&ALICE, 10_000_000_000_000);
+		let _ = Balances::deposit_creating(&ALICE, 10_000_000_000_000_000_000);
 		let subsistence = Contracts::subsistence_threshold();
 		
 		// 2. Create wasm contract
@@ -444,7 +462,7 @@ fn test_wasm_call_evm(){
 		let transfer_selector = &Keccak256::digest(b"transfer(address,uint256)")[0..4];
 		
 		let source_bob = H160::from_slice(&(AsRef::<[u8; 32]>::as_ref(&BOB)[0..20]));
-		let token: u128 = 1_883_000_000_000_000_000;
+		let token: u128 = 1_883_000_000_000_000_000_000;
 		
 		let fun_para: [u8;20] = source_bob.into();
 		let transfer_input = [&transfer_selector[..], &[0u8;12], &fun_para, &[0u8;16], &token.to_be_bytes()].concat();		
@@ -752,7 +770,7 @@ fn test_wasm_call_evm_balance(){
 	.existential_deposit(100)
 	.build()
 	.execute_with(|| {
-		let _ = Balances::deposit_creating(&ALICE, 10_000_000_000_000);
+		let _ = Balances::deposit_creating(&ALICE, 10_000_000_000_000_000_000);
 		let subsistence = Contracts::subsistence_threshold();
 		
 		// 2. Create wasm contract
@@ -1034,7 +1052,7 @@ fn test_wasm_call_evm_echo(){
 	.existential_deposit(100)
 	.build()
 	.execute_with(|| {
-		let _ = Balances::deposit_creating(&ALICE, 10_000_000_000_000);
+		let _ = Balances::deposit_creating(&ALICE, 10_000_000_000_000_000_000);
 		let subsistence = Contracts::subsistence_threshold();
 		
 		// 2. Create wasm contract

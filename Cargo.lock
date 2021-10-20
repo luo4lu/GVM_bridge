@@ -1405,6 +1405,23 @@ dependencies = [
 ]
 
 [[package]]
+name = "pallet-aura"
+version = "3.0.0"
+source = "git+https://github.com/paritytech/substrate.git?branch=frontier#39b31316815ec6d709e7ad7c1a31c436d14c53e6"
+dependencies = [
+ "frame-support",
+ "frame-system",
+ "pallet-session",
+ "pallet-timestamp",
+ "parity-scale-codec 2.2.0",
+ "serde",
+ "sp-application-crypto",
+ "sp-consensus-aura",
+ "sp-runtime",
+ "sp-std 3.0.0 (git+https://github.com/paritytech/substrate.git?branch=frontier)",
+]
+
+[[package]]
 name = "pallet-balances"
 version = "3.0.0"
 source = "git+https://github.com/paritytech/substrate.git?branch=frontier#39b31316815ec6d709e7ad7c1a31c436d14c53e6"
@@ -1535,6 +1552,24 @@ dependencies = [
 ]
 
 [[package]]
+name = "pallet-session"
+version = "3.0.0"
+source = "git+https://github.com/paritytech/substrate.git?branch=frontier#39b31316815ec6d709e7ad7c1a31c436d14c53e6"
+dependencies = [
+ "frame-support",
+ "frame-system",
+ "impl-trait-for-tuples 0.2.1",
+ "pallet-timestamp",
+ "parity-scale-codec 2.2.0",
+ "sp-core",
+ "sp-io",
+ "sp-runtime",
+ "sp-session",
+ "sp-staking",
+ "sp-std 3.0.0 (git+https://github.com/paritytech/substrate.git?branch=frontier)",
+]
+
+[[package]]
 name = "pallet-timestamp"
 version = "3.0.0"
 source = "git+https://github.com/paritytech/substrate.git?branch=frontier#39b31316815ec6d709e7ad7c1a31c436d14c53e6"
@@ -1568,6 +1603,7 @@ dependencies = [
  "ink_env",
  "lite-json",
  "log",
+ "pallet-aura",
  "pallet-balances",
  "pallet-contracts",
  "pallet-evm",
@@ -1581,6 +1617,7 @@ dependencies = [
  "serde",
  "serde_json",
  "sha3 0.8.2",
+ "sp-consensus-aura",
  "sp-core",
  "sp-io",
  "sp-keystore",
@@ -2377,6 +2414,31 @@ dependencies = [
 ]
 
 [[package]]
+name = "sp-consensus-aura"
+version = "0.9.0"
+source = "git+https://github.com/paritytech/substrate.git?branch=frontier#39b31316815ec6d709e7ad7c1a31c436d14c53e6"
+dependencies = [
+ "parity-scale-codec 2.2.0",
+ "sp-api",
+ "sp-application-crypto",
+ "sp-consensus-slots",
+ "sp-inherents",
+ "sp-runtime",
+ "sp-std 3.0.0 (git+https://github.com/paritytech/substrate.git?branch=frontier)",
+ "sp-timestamp",
+]
+
+[[package]]
+name = "sp-consensus-slots"
+version = "0.9.0"
+source = "git+https://github.com/paritytech/substrate.git?branch=frontier#39b31316815ec6d709e7ad7c1a31c436d14c53e6"
+dependencies = [
+ "parity-scale-codec 2.2.0",
+ "sp-arithmetic 3.0.0 (git+https://github.com/paritytech/substrate.git?branch=frontier)",
+ "sp-runtime",
+]
+
+[[package]]
 name = "sp-core"
 version = "3.0.0"
 source = "git+https://github.com/paritytech/substrate.git?branch=frontier#39b31316815ec6d709e7ad7c1a31c436d14c53e6"
@@ -2574,6 +2636,18 @@ dependencies = [
  "sp-std 3.0.0 (git+https://github.com/paritytech/substrate.git?branch=frontier)",
  "sp-wasm-interface",
  "wasmi",
+]
+
+[[package]]
+name = "sp-session"
+version = "3.0.0"
+source = "git+https://github.com/paritytech/substrate.git?branch=frontier#39b31316815ec6d709e7ad7c1a31c436d14c53e6"
+dependencies = [
+ "parity-scale-codec 2.2.0",
+ "sp-api",
+ "sp-core",
+ "sp-staking",
+ "sp-std 3.0.0 (git+https://github.com/paritytech/substrate.git?branch=frontier)",
 ]
 
 [[package]]

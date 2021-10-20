@@ -16,6 +16,7 @@ log = { version = "0.4.14", default-features = false }
 hex = { version = "0.4.2", default-features = false}
 getrandom = { version = "0.2", features = ["js"] }
 
+pallet-aura = { version = "3.0.0-dev", default-features = false, git = "https://github.com/paritytech/substrate.git", branch = "frontier" }
 frame-support = { version = "3.0.0-dev", default-features = false, git = "https://github.com/paritytech/substrate.git", branch = "frontier"}
 frame-system = { version = "3.0.0-dev", default-features = false, git = "https://github.com/paritytech/substrate.git", branch = "frontier" }
 sp-core = { version = "3.0.0-dev", default-features = false, git = "https://github.com/paritytech/substrate.git", branch = "frontier"}
@@ -29,6 +30,7 @@ fp-evm = {default-features = false, git = "https://github.com/paritytech/frontie
 byte-slice-cast= { version = "1.0.0", default-features = false }
 sha3 = { version = "0.8", default-features = false }
 blake2-rfc = { version = "0.2.18", default-features = false }
+sp-consensus-aura = { version = "0.9.0-dev", default-features = false, git = "https://github.com/paritytech/substrate.git", branch = "frontier" }
 
 
 [dev-dependencies]
@@ -45,7 +47,8 @@ pallet-evm-precompile-call-vm = { version = "0.1.0", path = "../evm-precompile/c
 ink_env = { git = "https://github.com/paritytech/ink",  version = "3.0.0-rc3" }
 
 [features]
-default = ["std"]
+default = ["std", "aura"]
+aura = []
 std = [
 	"codec/std",
 	"frame-support/std",
@@ -58,6 +61,7 @@ std = [
 	"sp-keystore",
 	"sp-runtime/std",
 	"sp-std/std",
+	"sp-consensus-aura/std",
 	"log/std",
 	"serde_json/std",
 	"byte-slice-cast/std",
@@ -65,5 +69,6 @@ std = [
 	"blake2-rfc/std",
 	"pallet-contracts/std",
 	"pallet-evm/std",
+	"pallet-aura/std",
 	"fp-evm/std",
 ]
