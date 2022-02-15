@@ -315,7 +315,7 @@ mod erc20 {
 			p: String,
 			u: Vec<u8>,
 		) -> (String, Vec<u8>) {
-			(p, u))
+			(p, u)
 		}
     }
 
